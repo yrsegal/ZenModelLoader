@@ -1,0 +1,15 @@
+[
+{
+  "modid": "zml",
+  "name": "Zen Mod Loader",
+  "description": "Don't sweat it, let ZML handle your models. Mainly for modjams and stuff.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["WireSegal"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": []
+}
+]
