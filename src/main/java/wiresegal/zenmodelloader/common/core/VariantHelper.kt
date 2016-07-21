@@ -11,6 +11,7 @@ import wiresegal.zenmodelloader.client.core.ModelHandler
  * Tools to implement variants easily.
  */
 object VariantHelper {
+
     /**
      * All items which use this method in their constructor should implement the setUnlocalizedNameForItem provided below in their setUnlocalizedName.
      */

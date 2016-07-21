@@ -1,7 +1,6 @@
 package wiresegal.zenmodelloader.client.core
 
 import net.minecraft.client.gui.GuiScreen
-import net.minecraft.client.resources.I18n
 import wiresegal.zenmodelloader.common.ZenModelLoader
 
 /**

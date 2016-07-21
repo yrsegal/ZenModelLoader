@@ -13,6 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
  * Provides a list of variants to load. The most basic class which can be put into the ModelHandler.
  */
 interface IVariantHolder {
+
     /**
      * Provides a mesh definition which can override the model loaded based on the MRL you pass back. Leave null to use default behavior.
      */
@@ -32,6 +33,7 @@ interface IVariantHolder {
  * Provides an extra list of variants to load, without adding extra metadata variants.
  */
 interface IExtraVariantHolder : IVariantHolder {
+
     /**
      * Extra variants to load as models without corresponding to metadata.
      */
@@ -42,16 +44,19 @@ interface IExtraVariantHolder : IVariantHolder {
  * An interface which defines a block which can be used with an ItemModBlock.
  */
 interface IModBlock : IVariantHolder {
+
     /**
      * Blocks can load item models by providing an enum instead of variants. The variants must still be provided for metadata purposes.
      */
     val variantEnum: Class<Enum<*>>?
         get() = null
+
     /**
      * A list of IProperties to ignore in a blockstate file.
      */
     val ignoredProperties: Array<IProperty<*>>?
         get() = null
+
     /**
      * The name of the block.
      */
