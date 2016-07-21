@@ -2,15 +2,10 @@
 
 package wiresegal.zenmodelloader.common.core
 
-import net.minecraft.item.ItemStack
-import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.translation.I18n
-import net.minecraft.world.World
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
-import vazkii.botania.common.core.helper.Vector3
-import java.awt.Color
 
 /**
  * @author WireSegal
