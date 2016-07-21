@@ -1,9 +1,5 @@
 package wiresegal.zenmodelloader.common.lib
 
-/**
- * @author WireSegal
- * Created at 4:35 PM on 7/21/16.
- */
 object LibMisc {
     const val MOD_NAME = "Zen Model Loader"
     const val MOD_ID = "zml"

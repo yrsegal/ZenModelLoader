@@ -30,8 +30,14 @@ object ModelHandler {
 
     val variantCache = HashMap<String, MutableList<IVariantHolder>>()
 
+    /**
+     * This is Mod name -> (Variant name -> MRL), specifically for ItemMeshDefinitions.
+     */
     val resourceLocations = HashMap<String, HashMap<String, ModelResourceLocation>>()
 
+    /**
+     * Use this method to inject your item into the list to be loaded at the end of preinit and colorized at the end of init.
+     */
     fun addToCache(holder: IVariantHolder) {
         val name = Loader.instance().activeModContainer()?.modId ?: return
         variantCache.putIfAbsent(name, mutableListOf())

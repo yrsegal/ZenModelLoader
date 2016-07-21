@@ -17,8 +17,7 @@ import wiresegal.zenmodelloader.common.core.IModBlock
 import wiresegal.zenmodelloader.common.core.IVariantHolder
 
 /**
- * @author WireSegal
- * Created at 5:48 PM on 3/20/16.
+ * The default implementation for an IModBlock wrapper Item that gets registered as an IVariantHolder.
  */
 open class ItemModBlock(block: Block) : ItemBlock(block), IVariantHolder, IItemColorProvider {
 
