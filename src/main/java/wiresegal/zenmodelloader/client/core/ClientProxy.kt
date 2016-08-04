@@ -13,6 +13,7 @@ import wiresegal.zenmodelloader.common.core.CommonProxy
 class ClientProxy : CommonProxy() {
     override fun pre(e: FMLPreInitializationEvent) {
         super.pre(e)
+        ModelHandler.preInit()
     }
 
     override fun init(e: FMLInitializationEvent) {

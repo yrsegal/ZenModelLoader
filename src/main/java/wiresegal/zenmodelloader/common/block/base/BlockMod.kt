@@ -24,7 +24,8 @@ open class BlockMod(name: String, materialIn: Material, color: MapColor, vararg 
 
     init {
         modId = Loader.instance().activeModContainer().modId
-        this.variants = VariantHelper.setupBlock(this, name, variants, itemForm)
+        this.variants = VariantHelper.beginSetupBlock(name, variants)
+        VariantHelper.finishSetupBlock(this, name, itemForm)
     }
 
     override fun setUnlocalizedName(name: String): Block {

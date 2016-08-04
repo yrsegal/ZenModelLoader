@@ -32,16 +32,20 @@ object VariantHelper {
 
     /**
      * All blocks which use this method in their constructor should implement the setUnlocalizedNameForBlock provided below in their setUnlocalizedName.
+     * After caching variants using this, call finishSetupBlock.
      */
-    fun setupBlock(block: Block, name: String, variants: Array<out String>, itemForm: ItemBlock?): Array<out String> {
+    fun beginSetupBlock(name: String, variants: Array<out String>): Array<out String> {
         var variantTemp = variants
         if (variants.size == 0) {
             variantTemp = arrayOf(name)
         }
+        return variantTemp
+    }
+
+    fun finishSetupBlock(block: Block, name: String, itemForm: ItemBlock?) {
         block.unlocalizedName = name
         if (itemForm == null)
             ModelHandler.addToCache(block as IVariantHolder)
-        return variantTemp
     }
 
     fun setUnlocalizedNameForItem(item: Item, modId: String, name: String) {
