@@ -99,23 +99,14 @@ object ModelHandler {
     fun registerModels(item: IVariantHolder, variants: Array<out String>, extra: Boolean) {
         if (item is ItemBlock && item.getBlock() is IModBlock) {
             val i = item.getBlock() as IModBlock
-            val name = i.variantEnum
-            val loc = i.ignoredProperties
-            if (loc != null && loc.size > 0) {
-                val builder = StateMap.Builder()
-                val var7 = loc
-                val var8 = loc.size
+            val variantEnum = i.variantEnum
 
-                for (var9 in 0..var8 - 1) {
-                    val p = var7[var9]
-                    builder.ignore(p)
-                }
+            val mapper = i.getStateMapper()
+            if (mapper != null)
+                ModelLoader.setCustomStateMapper(i as Block, mapper)
 
-                ModelLoader.setCustomStateMapper(i as Block, builder.build())
-            }
-
-            if (name != null) {
-                registerVariantsDefaulted(item, i as Block, name, "variant")
+            if (variantEnum != null) {
+                registerVariantsDefaulted(item, i as Block, variantEnum, "variant")
                 return
             }
         } else if (item is IModBlock) {

@@ -2,6 +2,8 @@ package wiresegal.zenmodelloader.common.core
 
 import net.minecraft.block.properties.IProperty
 import net.minecraft.client.renderer.ItemMeshDefinition
+import net.minecraft.client.renderer.block.statemap.IStateMapper
+import net.minecraft.client.renderer.block.statemap.StateMap
 import net.minecraft.client.renderer.color.IBlockColor
 import net.minecraft.client.renderer.color.IItemColor
 import net.minecraft.item.EnumRarity
@@ -53,9 +55,19 @@ interface IModBlock : IVariantHolder {
 
     /**
      * A list of IProperties to ignore in a blockstate file.
+     * If getStateMapper is overridden, this will have to be implemented in the overriden implementation.
      */
     val ignoredProperties: Array<IProperty<*>>?
         get() = null
+
+    /**
+     * Provides a statemapper for the block, if needed. By default uses ignored properties only.
+     */
+    @SideOnly(Side.CLIENT)
+    fun getStateMapper(): IStateMapper? {
+        val ignored = ignoredProperties
+        return if (ignored == null || ignored.isEmpty()) null else StateMap.Builder().ignore(*ignored).build()
+    }
 
     /**
      * The name of the block.
