@@ -4,8 +4,8 @@ object LibMisc {
     const val MOD_NAME = "Zen Model Loader"
     const val MOD_ID = "zml"
 
-    const val BUILD = "1"
-    const val VERSIONID = "5"
+    const val BUILD = "2"
+    const val VERSIONID = "0"
     const val VERSION = "$VERSIONID.$BUILD"
     const val DEPENDENCIES = "after:*"
 
