@@ -4,13 +4,18 @@ import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.Loader
+import wiresegal.zenmodelloader.common.core.IModItemProvider
 import wiresegal.zenmodelloader.common.core.IVariantHolder
 import wiresegal.zenmodelloader.common.core.VariantHelper
+import wiresegal.zenmodelloader.common.tab.ModCreativeTab
 
 /**
  * The default implementation for an IVariantHolder item.
  */
-open class ItemMod(name: String, vararg variants: String) : Item(), IVariantHolder {
+open class ItemMod(name: String, vararg variants: String) : Item(), IModItemProvider {
+
+    override val providedItem: Item
+        get() = this
 
     override val variants: Array<out String>
 
@@ -20,7 +25,7 @@ open class ItemMod(name: String, vararg variants: String) : Item(), IVariantHold
     init {
         modId = Loader.instance().activeModContainer().modId
         bareName = name
-        this.variants = VariantHelper.setupItem(this, name, variants)
+        this.variants = VariantHelper.setupItem(this, name, variants, creativeTab)
     }
 
     override fun setUnlocalizedName(name: String): Item {
@@ -46,5 +51,8 @@ open class ItemMod(name: String, vararg variants: String) : Item(), IVariantHold
             subItems.add(ItemStack(itemIn, 1, i))
         }
     }
+
+    open val creativeTab: ModCreativeTab?
+        get() = null
 }
 

@@ -12,14 +12,12 @@ import net.minecraftforge.fml.common.registry.GameRegistry
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import wiresegal.zenmodelloader.client.core.ModelHandler
-import wiresegal.zenmodelloader.common.core.IItemColorProvider
-import wiresegal.zenmodelloader.common.core.IModBlock
-import wiresegal.zenmodelloader.common.core.IVariantHolder
+import wiresegal.zenmodelloader.common.core.*
 
 /**
  * The default implementation for an IModBlock wrapper Item that gets registered as an IVariantHolder.
  */
-open class ItemModBlock(block: Block) : ItemBlock(block), IVariantHolder, IItemColorProvider {
+open class ItemModBlock(block: Block) : ItemBlock(block), IModItemProvider, IItemColorProvider, IModBlockProvider {
 
     private val modBlock: IModBlock
     private val modId: String
@@ -32,6 +30,12 @@ open class ItemModBlock(block: Block) : ItemBlock(block), IVariantHolder, IItemC
         }
         ModelHandler.addToCache(this)
     }
+
+    override val providedItem: Item
+        get() = this
+
+    override val providedBlock: Block
+        get() = block
 
     override fun getMetadata(damage: Int): Int {
         return damage

@@ -6,6 +6,7 @@ import net.minecraft.block.material.Material
 import net.minecraft.item.ItemBlock
 import net.minecraftforge.fml.common.Loader
 import wiresegal.zenmodelloader.common.core.IModBlock
+import wiresegal.zenmodelloader.common.core.IModBlockProvider
 import wiresegal.zenmodelloader.common.core.VariantHelper
 
 /**
@@ -25,7 +26,7 @@ open class BlockMod(name: String, materialIn: Material, color: MapColor, vararg 
     init {
         modId = Loader.instance().activeModContainer().modId
         this.variants = VariantHelper.beginSetupBlock(name, variants)
-        VariantHelper.finishSetupBlock(this, name, itemForm)
+        VariantHelper.finishSetupBlock(this, name, itemForm, creativeTab)
     }
 
     override fun setUnlocalizedName(name: String): Block {

@@ -4,7 +4,6 @@ import net.minecraft.block.Block
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.ModelBakery
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
-import net.minecraft.client.renderer.block.statemap.StateMap
 import net.minecraft.item.Item
 import net.minecraft.item.ItemBlock
 import net.minecraft.util.IStringSerializable
@@ -26,18 +25,20 @@ object ModelHandler {
     val debug = ZenModelLoader.DEV_ENVIRONMENT
     var modName = ""
     val namePad: String
-        get() = modName.padEnd(modName.length)
+        get() = Array(modName.length) {" "}.joinToString("")
 
     val variantCache = HashMap<String, MutableList<IVariantHolder>>()
 
     /**
      * This is Mod name -> (Variant name -> MRL), specifically for ItemMeshDefinitions.
      */
+    @JvmStatic
     val resourceLocations = HashMap<String, HashMap<String, ModelResourceLocation>>()
 
     /**
      * Use this method to inject your item into the list to be loaded at the end of preinit and colorized at the end of init.
      */
+    @JvmStatic
     fun addToCache(holder: IVariantHolder) {
         val name = Loader.instance().activeModContainer()?.modId ?: return
         variantCache.putIfAbsent(name, mutableListOf())
@@ -52,7 +53,7 @@ object ModelHandler {
     fun preInit() {
         for ((modid, holders) in variantCache) {
             modName = modid
-            for (holder in holders.sortedBy { (255 - it.variants.size).toChar() + if (it is ItemBlock) "b" else "I" + if (it is Item) it.registryName.resourcePath else "" }) {
+            for (holder in holders.sortedBy { (255 - it.variants.size).toChar() + if (it is IModBlockProvider) "b" else "I" + if (it is IModItemProvider) it.providedItem.registryName.resourcePath else "" }) {
                 registerModels(holder)
             }
         }
@@ -63,21 +64,19 @@ object ModelHandler {
         val blockColors = Minecraft.getMinecraft().blockColors
         for ((modid, holders) in variantCache) {
             for (holder in holders) {
-                if (holder is IItemColorProvider && holder is Item) {
+
+                if (holder is IItemColorProvider && holder is IModItemProvider) {
                     val color = holder.getItemColor()
                     if (color != null)
-                        itemColors.registerItemColorHandler(color, holder)
+                        itemColors.registerItemColorHandler(color, holder.providedItem)
                 }
 
-                if (holder is ItemBlock && holder.getBlock() is IBlockColorProvider) {
-                    val color = (holder.getBlock() as IBlockColorProvider).getBlockColor()
-                    if (color != null)
-                        blockColors.registerBlockColorHandler(color, holder.getBlock())
-                } else if (holder is Block && holder is IBlockColorProvider) {
+                if (holder is IModBlockProvider && holder is IBlockColorProvider) {
                     val color = holder.getBlockColor()
                     if (color != null)
-                        blockColors.registerBlockColorHandler(color, holder)
+                        blockColors.registerBlockColorHandler(color, holder.providedBlock)
                 }
+
             }
         }
     }
@@ -85,53 +84,39 @@ object ModelHandler {
     // The following is a blatant copy of Psi's ModelHandler with minor changes for various purposes.
 
     fun registerModels(holder: IVariantHolder) {
-        val def = holder.getCustomMeshDefinition()
-        if (def != null && holder is Item) {
-            ModelLoader.setCustomMeshDefinition(holder, def)
-        } else {
+        if (holder is IModItemProvider && holder.getCustomMeshDefinition() != null)
+            ModelLoader.setCustomMeshDefinition(holder.providedItem, holder.getCustomMeshDefinition())
+        else
             registerModels(holder, holder.variants, false)
-        }
-        if (holder is IExtraVariantHolder) {
+
+        if (holder is IExtraVariantHolder)
             registerModels(holder, holder.extraVariants, true)
-        }
     }
 
-    fun registerModels(item: IVariantHolder, variants: Array<out String>, extra: Boolean) {
-        if (item is ItemBlock && item.getBlock() is IModBlock) {
-            val i = item.getBlock() as IModBlock
-            val variantEnum = i.variantEnum
+    fun registerModels(holder: IVariantHolder, variants: Array<out String>, extra: Boolean) {
+        if (holder is IModBlockProvider) {
+            val variantEnum = holder.variantEnum
 
-            val mapper = i.getStateMapper()
+            val mapper = holder.getStateMapper()
             if (mapper != null)
-                ModelLoader.setCustomStateMapper(i as Block, mapper)
+                ModelLoader.setCustomStateMapper(holder.providedBlock, mapper)
 
-            if (variantEnum != null) {
-                registerVariantsDefaulted(item, i as Block, variantEnum, "variant")
+            if (variantEnum != null && holder is IModItemProvider) {
+                registerVariantsDefaulted(holder.providedItem, holder.providedBlock, variantEnum, "variant")
                 return
-            }
-        } else if (item is IModBlock) {
-            val loc = item.ignoredProperties
-            if (loc != null && loc.size > 0) {
-                val builder = StateMap.Builder()
-                val var7 = loc
-                val var8 = loc.size
-
-                for (var9 in 0..var8 - 1) {
-                    val p = var7[var9]
-                    builder.ignore(p)
-                }
-
-                ModelLoader.setCustomStateMapper(item as Block, builder.build())
             }
         }
 
-        if (item is Item) {
+        if (holder is IModItemProvider) {
+            val item = holder.providedItem
             for (variant in variants.withIndex()) {
                 if (variant.index == 0) {
                     var print = "$namePad | Registering "
+
                     if (variant.value != item.registryName.resourcePath || variants.size != 1)
                         print += "variant" + if (variants.size == 1) "" else "s" + " of "
-                    print += if (item is ItemBlock) "block" else "item"
+
+                    print += if (item is IModBlockProvider) "block" else "item"
                     print += " ${item.registryName.resourcePath}"
                     log(print)
                 }
@@ -167,9 +152,8 @@ object ModelHandler {
                         print += " " + item.registryName.resourcePath
                         log(print)
                     }
-                    if (e.name != item.registryName.resourcePath || enumclazz.enumConstants.size != 1) {
+                    if (e.name != item.registryName.resourcePath || enumclazz.enumConstants.size != 1)
                         log("$namePad |  Variant #${e.ordinal + 1}: $variantName")
-                    }
 
                     val loc = ModelResourceLocation(locName, variantName)
                     val i = e.ordinal

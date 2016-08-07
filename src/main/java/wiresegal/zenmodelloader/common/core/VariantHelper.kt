@@ -6,6 +6,7 @@ import net.minecraft.item.ItemBlock
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.common.registry.GameRegistry
 import wiresegal.zenmodelloader.client.core.ModelHandler
+import wiresegal.zenmodelloader.common.tab.ModCreativeTab
 
 /**
  * Tools to implement variants easily.
@@ -15,7 +16,7 @@ object VariantHelper {
     /**
      * All items which use this method in their constructor should implement the setUnlocalizedNameForItem provided below in their setUnlocalizedName.
      */
-    fun setupItem(item: Item, name: String, variants: Array<out String>): Array<out String> {
+    fun setupItem(item: Item, name: String, variants: Array<out String>, creativeTab: ModCreativeTab? = null): Array<out String> {
         var variantTemp = variants
         item.unlocalizedName = name
         if (variantTemp.size > 1) {
@@ -27,6 +28,7 @@ object VariantHelper {
         }
 
         ModelHandler.addToCache(item as IVariantHolder)
+        creativeTab?.set(item)
         return variantTemp
     }
 
@@ -42,10 +44,11 @@ object VariantHelper {
         return variantTemp
     }
 
-    fun finishSetupBlock(block: Block, name: String, itemForm: ItemBlock?) {
+    fun finishSetupBlock(block: Block, name: String, itemForm: ItemBlock?, creativeTab: ModCreativeTab? = null) {
         block.unlocalizedName = name
         if (itemForm == null)
             ModelHandler.addToCache(block as IVariantHolder)
+        creativeTab?.set(block)
     }
 
     fun setUnlocalizedNameForItem(item: Item, modId: String, name: String) {
