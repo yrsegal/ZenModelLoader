@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package wiresegal.zenmodelloader.common.core
 
 import net.minecraft.util.text.translation.I18n
@@ -24,6 +22,7 @@ open class CommonProxy {
         // NO-OP
     }
 
+    @Suppress("DEPRECATION")
     open fun translate(s: String, vararg format: Any?): String {
         return I18n.translateToLocalFormatted(s, *format)
     }

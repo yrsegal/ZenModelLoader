@@ -141,7 +141,7 @@ interface IItemColorProvider : IVariantHolder {
  * For those using kotlin, you can implement the IBlockColor as a lambda.
  * If you're using java, you must implement it as an anonymous class.
  */
-interface IBlockColorProvider : IItemColorProvider, IModBlock {
+interface IBlockColorProvider : IItemColorProvider, IModBlockProvider {
     @SideOnly(Side.CLIENT)
     fun getBlockColor(): IBlockColor?
 

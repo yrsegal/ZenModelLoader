@@ -21,10 +21,11 @@ import java.util.*
  */
 object ModelHandler {
 
-    val logger: Logger = ZenModelLoader.LOGGER
-    val debug = ZenModelLoader.DEV_ENVIRONMENT
-    var modName = ""
-    val namePad: String
+    // Easy access
+    private val logger: Logger = ZenModelLoader.LOGGER
+    private val debug = ZenModelLoader.DEV_ENVIRONMENT
+    private var modName = ""
+    private val namePad: String
         get() = Array(modName.length) {" "}.joinToString("")
 
     val variantCache = HashMap<String, MutableList<IVariantHolder>>()
@@ -41,18 +42,17 @@ object ModelHandler {
     @JvmStatic
     fun addToCache(holder: IVariantHolder) {
         val name = Loader.instance().activeModContainer()?.modId ?: return
-        variantCache.putIfAbsent(name, mutableListOf())
-        variantCache[name]?.add(holder)
+        variantCache.getOrPut(name) { mutableListOf() }.add(holder)
     }
 
     private fun addToCachedLocations(name: String, mrl: ModelResourceLocation) {
-        resourceLocations.putIfAbsent(modName, hashMapOf())
-        resourceLocations[modName]?.put(name, mrl)
+        resourceLocations.getOrPut(modName) { hashMapOf() }.put(name, mrl)
     }
 
     fun preInit() {
         for ((modid, holders) in variantCache) {
             modName = modid
+            log("$modName | Registering models")
             for (holder in holders.sortedBy { (255 - it.variants.size).toChar() + if (it is IModBlockProvider) "b" else "I" + if (it is IModItemProvider) it.providedItem.registryName.resourcePath else "" }) {
                 registerModels(holder)
             }
@@ -63,18 +63,24 @@ object ModelHandler {
         val itemColors = Minecraft.getMinecraft().itemColors
         val blockColors = Minecraft.getMinecraft().blockColors
         for ((modid, holders) in variantCache) {
+            modName = modid
+            log("$modName | Registering colors")
             for (holder in holders) {
 
                 if (holder is IItemColorProvider && holder is IModItemProvider) {
                     val color = holder.getItemColor()
-                    if (color != null)
+                    if (color != null) {
+                        log("$namePad | Registering item color for ${holder.providedItem.registryName.resourcePath}")
                         itemColors.registerItemColorHandler(color, holder.providedItem)
+                    }
                 }
 
                 if (holder is IModBlockProvider && holder is IBlockColorProvider) {
                     val color = holder.getBlockColor()
-                    if (color != null)
+                    if (color != null) {
+                        log("$namePad | Registering block color for ${holder.providedBlock.registryName.resourcePath}")
                         blockColors.registerBlockColorHandler(color, holder.providedBlock)
+                    }
                 }
 
             }
@@ -113,8 +119,8 @@ object ModelHandler {
                 if (variant.index == 0) {
                     var print = "$namePad | Registering "
 
-                    if (variant.value != item.registryName.resourcePath || variants.size != 1)
-                        print += "variant" + if (variants.size == 1) "" else "s" + " of "
+                    if (variant.value != item.registryName.resourcePath || variants.size != 1 || extra)
+                        print += "${if (extra) "extra " else ""}variant${if (variants.size == 1) "" else "s"} of "
 
                     print += if (item is IModBlockProvider) "block" else "item"
                     print += " ${item.registryName.resourcePath}"

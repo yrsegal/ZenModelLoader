@@ -17,7 +17,7 @@ import wiresegal.zenmodelloader.common.core.*
 /**
  * The default implementation for an IModBlock wrapper Item that gets registered as an IVariantHolder.
  */
-open class ItemModBlock(block: Block) : ItemBlock(block), IModItemProvider, IItemColorProvider, IModBlockProvider {
+open class ItemModBlock(block: Block) : ItemBlock(block), IModItemProvider, IBlockColorProvider {
 
     private val modBlock: IModBlock
     private val modId: String
@@ -77,6 +77,9 @@ open class ItemModBlock(block: Block) : ItemBlock(block), IModItemProvider, IIte
 
     @SideOnly(Side.CLIENT)
     override fun getItemColor() = if (this.modBlock is IItemColorProvider) this.modBlock.getItemColor() else null
+
+    @SideOnly(Side.CLIENT)
+    override fun getBlockColor() = if (this.modBlock is IBlockColorProvider) this.modBlock.getBlockColor() else null
 
     override fun getRarity(stack: ItemStack): EnumRarity? {
         return this.modBlock.getBlockRarity(stack)

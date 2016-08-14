@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.Loader
 import java.util.*
 
-abstract class ModCreativeTab(postFix: String?) : CreativeTabs(Loader.instance().activeModContainer().modId + if (postFix == null) "" else ".$postFix") {
+abstract class ModCreativeTab(postFix: String? = null) : CreativeTabs(Loader.instance().activeModContainer().modId + if (postFix == null) "" else ".$postFix") {
 
     internal lateinit var list: MutableList<ItemStack>
 
