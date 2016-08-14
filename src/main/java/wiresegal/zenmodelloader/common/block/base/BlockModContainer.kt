@@ -11,16 +11,14 @@ import net.minecraft.world.World
  * @author WireSegal
  * Created at 5:45 PM on 3/20/16.
  */
-abstract class BlockModContainer(name: String, materialIn: Material, vararg variants: String) : BlockMod(name, materialIn, *variants), ITileEntityProvider {
-    override fun breakBlock(worldIn: World, pos: BlockPos, state: IBlockState) {
-        super.breakBlock(worldIn, pos, state)
-        worldIn.removeTileEntity(pos)
+abstract class BlockModContainer(name: String, materialIn: Material, vararg variants: String) : BlockMod(name, materialIn, *variants) {
+
+    override fun eventReceived(state: IBlockState?, worldIn: World, pos: BlockPos, eventID: Int, eventParam: Int): Boolean {
+        val tile = worldIn.getTileEntity(pos) ?: return false
+        return tile.receiveClientEvent(eventID, eventParam)
     }
 
-    override fun eventReceived(state: IBlockState?, worldIn: World, pos: BlockPos?, eventID: Int, eventParam: Int): Boolean {
-        val tileentity = worldIn.getTileEntity(pos)
-        return if (tileentity == null) false else tileentity.receiveClientEvent(eventID, eventParam)
-    }
+    override fun hasTileEntity(state: IBlockState?) = true
 
-    override abstract fun createNewTileEntity(worldIn: World, meta: Int): TileEntity
+    override abstract fun createTileEntity(world: World, state: IBlockState): TileEntity?
 }

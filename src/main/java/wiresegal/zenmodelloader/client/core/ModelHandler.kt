@@ -10,6 +10,8 @@ import net.minecraft.util.IStringSerializable
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.fml.common.Loader
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import org.apache.logging.log4j.Logger
 import wiresegal.zenmodelloader.common.ZenModelLoader
 import wiresegal.zenmodelloader.common.core.*
@@ -34,6 +36,7 @@ object ModelHandler {
      * This is Mod name -> (Variant name -> MRL), specifically for ItemMeshDefinitions.
      */
     @JvmStatic
+    @SideOnly(Side.CLIENT)
     val resourceLocations = HashMap<String, HashMap<String, ModelResourceLocation>>()
 
     /**
@@ -45,10 +48,12 @@ object ModelHandler {
         variantCache.getOrPut(name) { mutableListOf() }.add(holder)
     }
 
+    @SideOnly(Side.CLIENT)
     private fun addToCachedLocations(name: String, mrl: ModelResourceLocation) {
         resourceLocations.getOrPut(modName) { hashMapOf() }.put(name, mrl)
     }
 
+    @SideOnly(Side.CLIENT)
     fun preInit() {
         for ((modid, holders) in variantCache) {
             modName = modid
@@ -59,6 +64,7 @@ object ModelHandler {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     fun init() {
         val itemColors = Minecraft.getMinecraft().itemColors
         val blockColors = Minecraft.getMinecraft().blockColors
@@ -87,8 +93,7 @@ object ModelHandler {
         }
     }
 
-    // The following is a blatant copy of Psi's ModelHandler with minor changes for various purposes.
-
+    @SideOnly(Side.CLIENT)
     fun registerModels(holder: IVariantHolder) {
         if (holder is IModItemProvider && holder.getCustomMeshDefinition() != null)
             ModelLoader.setCustomMeshDefinition(holder.providedItem, holder.getCustomMeshDefinition())
@@ -99,8 +104,9 @@ object ModelHandler {
             registerModels(holder, holder.extraVariants, true)
     }
 
+    @SideOnly(Side.CLIENT)
     fun registerModels(holder: IVariantHolder, variants: Array<out String>, extra: Boolean) {
-        if (holder is IModBlockProvider) {
+        if (holder is IModBlockProvider && !extra) {
             val variantEnum = holder.variantEnum
 
             val mapper = holder.getStateMapper()
@@ -126,9 +132,9 @@ object ModelHandler {
                     print += " ${item.registryName.resourcePath}"
                     log(print)
                 }
-                if ((variant.value != item.registryName.resourcePath || variants.size != 1)) {
+
+                if ((variant.value != item.registryName.resourcePath || variants.size != 1))
                     log("$namePad |  Variant #${variant.index + 1}: ${variant.value}")
-                }
 
                 val model = ModelResourceLocation(ResourceLocation(modName, variant.value).toString(), "inventory")
                 if (!extra) {
@@ -143,8 +149,9 @@ object ModelHandler {
 
     }
 
+    @SideOnly(Side.CLIENT)
     private fun registerVariantsDefaulted(item: Item, block: Block, enumclazz: Class<*>, variantHeader: String) {
-        val locName = Block.REGISTRY.getNameForObject(block).toString()
+        val locName = block.registryName.toString()
         if (enumclazz.enumConstants != null)
             for (e in enumclazz.enumConstants) {
                 if (e is IStringSerializable && e is Enum<*>) {

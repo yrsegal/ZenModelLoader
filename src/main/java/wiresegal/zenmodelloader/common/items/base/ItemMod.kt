@@ -36,20 +36,14 @@ open class ItemMod(name: String, vararg variants: String) : Item(), IModItemProv
     override fun getUnlocalizedName(stack: ItemStack): String {
         val dmg = stack.itemDamage
         val variants = this.variants
-        val name: String
-        if (dmg >= variants.size) {
-            name = this.bareName
-        } else {
-            name = variants[dmg]
-        }
+        val name = if (dmg >= variants.size) this.bareName else variants[dmg]
 
         return "item.$modId:$name"
     }
 
     override fun getSubItems(itemIn: Item, tab: CreativeTabs?, subItems: MutableList<ItemStack>) {
-        for (i in 0..this.variants.size - 1) {
+        for (i in 0..this.variants.size - 1)
             subItems.add(ItemStack(itemIn, 1, i))
-        }
     }
 
     open val creativeTab: ModCreativeTab?
