@@ -28,14 +28,14 @@ object ModelHandler {
     private val debug = ZenModelLoader.DEV_ENVIRONMENT
     private var modName = ""
     private val namePad: String
-        get() = Array(modName.length) {" "}.joinToString("")
+        get() = Array(modName.length) { " " }.joinToString("")
 
-    val variantCache = HashMap<String, MutableList<IVariantHolder>>()
+    private val variantCache = HashMap<String, MutableList<IVariantHolder>>()
 
     /**
      * This is Mod name -> (Variant name -> MRL), specifically for ItemMeshDefinitions.
      */
-    @JvmStatic
+    @JvmField
     @SideOnly(Side.CLIENT)
     val resourceLocations = HashMap<String, HashMap<String, ModelResourceLocation>>()
 
@@ -43,7 +43,7 @@ object ModelHandler {
      * Use this method to inject your item into the list to be loaded at the end of preinit and colorized at the end of init.
      */
     @JvmStatic
-    fun addToCache(holder: IVariantHolder) {
+    fun registerVariantHolder(holder: IVariantHolder) {
         val name = Loader.instance().activeModContainer()?.modId ?: return
         variantCache.getOrPut(name) { mutableListOf() }.add(holder)
     }

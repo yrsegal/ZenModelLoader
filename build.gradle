@@ -24,6 +24,9 @@ allprojects {
     }
 }
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 ext.configFile = file('build.properties')
 ext.config = parseConfig(configFile)
 

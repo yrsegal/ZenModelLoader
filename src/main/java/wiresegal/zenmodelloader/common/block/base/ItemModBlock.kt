@@ -2,7 +2,6 @@ package wiresegal.zenmodelloader.common.block.base
 
 import net.minecraft.block.Block
 import net.minecraft.creativetab.CreativeTabs
-import net.minecraft.item.EnumRarity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemBlock
 import net.minecraft.item.ItemStack
@@ -12,7 +11,10 @@ import net.minecraftforge.fml.common.registry.GameRegistry
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import wiresegal.zenmodelloader.client.core.ModelHandler
-import wiresegal.zenmodelloader.common.core.*
+import wiresegal.zenmodelloader.common.core.IBlockColorProvider
+import wiresegal.zenmodelloader.common.core.IItemColorProvider
+import wiresegal.zenmodelloader.common.core.IModBlock
+import wiresegal.zenmodelloader.common.core.IModItemProvider
 
 /**
  * The default implementation for an IModBlock wrapper Item that gets registered as an IVariantHolder.
@@ -27,7 +29,7 @@ open class ItemModBlock(block: Block) : ItemBlock(block), IModItemProvider, IBlo
         this.modBlock = block as IModBlock
         if (this.variants.size > 1)
             this.setHasSubtypes(true)
-        ModelHandler.addToCache(this)
+        ModelHandler.registerVariantHolder(this)
     }
 
     override fun getMetadata(damage: Int) = damage

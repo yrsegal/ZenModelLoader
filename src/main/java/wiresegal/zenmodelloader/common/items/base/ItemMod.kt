@@ -5,7 +5,6 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.Loader
 import wiresegal.zenmodelloader.common.core.IModItemProvider
-import wiresegal.zenmodelloader.common.core.IVariantHolder
 import wiresegal.zenmodelloader.common.core.VariantHelper
 import wiresegal.zenmodelloader.common.tab.ModCreativeTab
 

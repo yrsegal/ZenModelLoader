@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
  * Created at 5:07 PM on 4/12/16.
  */
 open class CommonProxy {
+
     open fun pre(e: FMLPreInitializationEvent) {
         //NO-OP
     }

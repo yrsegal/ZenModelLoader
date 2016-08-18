@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.block.statemap.IStateMapper
 import net.minecraft.client.renderer.block.statemap.StateMap
 import net.minecraft.client.renderer.color.IBlockColor
 import net.minecraft.client.renderer.color.IItemColor
-import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.EnumRarity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -79,7 +78,7 @@ interface IModBlockProvider : IVariantHolder {
         get() = null
 
     /**
-     * Provides a statemapper for the block, if needed. By default uses ignored properties only.
+     * Provides a statemapper for the block, if needed. By default uses ignored properties only. Leave null to use default behavior.
      */
     @SideOnly(Side.CLIENT)
     fun getStateMapper(): IStateMapper? {
@@ -127,21 +126,23 @@ interface IModBlock : IModBlockProvider {
 }
 
 /**
- * An interface which defines an item (or a block with an item) that colorizes the item.
- * For those using kotlin, you can implement the IItemColor as a lambda.
- * If you're using java, you must implement it as an anonymous class.
+ * An interface which defines an item provider (or an IModBlock with an item) that colorizes the item.
  */
 interface IItemColorProvider : IVariantHolder {
+    /**
+     * Provides an item color for the provided item. Leave null to use default behavior.
+     */
     @SideOnly(Side.CLIENT)
     fun getItemColor(): IItemColor?
 }
 
 /**
- * An interface which defines a block (not necessarily with an item) that colorizes the block.
- * For those using kotlin, you can implement the IBlockColor as a lambda.
- * If you're using java, you must implement it as an anonymous class.
+ * An interface which defines a block provider (not necessarily with an item) that colorizes the block.
  */
 interface IBlockColorProvider : IItemColorProvider, IModBlockProvider {
+    /**
+     * Provides a block color for the provided block. Leave null to use default behavior.
+     */
     @SideOnly(Side.CLIENT)
     fun getBlockColor(): IBlockColor?
 

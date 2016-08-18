@@ -14,15 +14,16 @@ import wiresegal.zenmodelloader.common.lib.LibMisc
 @Mod(modid = LibMisc.MOD_ID, name = LibMisc.MOD_NAME, version = LibMisc.VERSION, dependencies = LibMisc.DEPENDENCIES, acceptedMinecraftVersions = LibMisc.VERSIONS)
 class ZenModelLoader {
     companion object {
+        @JvmStatic
         @SidedProxy(serverSide = LibMisc.PROXY_COMMON,
                 clientSide = LibMisc.PROXY_CLIENT)
         lateinit var PROXY: CommonProxy
 
+        @JvmField
         val LOGGER: Logger = LogManager.getLogger(LibMisc.MOD_ID)
 
-        val DEV_ENVIRONMENT: Boolean by lazy {
-            Launch.blackboard["fml.deobfuscatedEnvironment"] as Boolean
-        }
+        @JvmField
+        val DEV_ENVIRONMENT = Launch.blackboard["fml.deobfuscatedEnvironment"] as Boolean
     }
 
     @Mod.EventHandler

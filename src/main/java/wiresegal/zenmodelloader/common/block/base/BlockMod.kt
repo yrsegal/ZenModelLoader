@@ -6,7 +6,6 @@ import net.minecraft.block.material.Material
 import net.minecraft.item.ItemBlock
 import net.minecraftforge.fml.common.Loader
 import wiresegal.zenmodelloader.common.core.IModBlock
-import wiresegal.zenmodelloader.common.core.IModBlockProvider
 import wiresegal.zenmodelloader.common.core.VariantHelper
 
 /**
